@@ -11143,13 +11143,17 @@ function mpConnect(onOpen, _retries) {
   document.getElementById('lobby-status').textContent='Connecting…';
   mpWs = new WebSocket(activeWsUrl);
   mpWs.onopen = () => {
-    document.getElementById('lobby-status').textContent='Connected.';
+    console.log('[MP] WebSocket connected to', activeWsUrl);
+    document.getElementById('lobby-status').textContent='Connected — creating room...';
     if(onOpen) onOpen();
   };
-  mpWs.onerror = () => {
-    if(retries < 3) {
-      // Retry after short delay (server may still be starting)
-      setTimeout(() => { mpWs = null; mpConnect(onOpen, retries + 1); }, 800);
+  mpWs.onerror = (ev) => {
+    console.error('[MP] WebSocket error', ev);
+    const maxRetries = isOnlineMode ? 10 : 3; // more retries for cloud cold-start
+    const retryDelay = isOnlineMode ? 3000 : 800;
+    if(retries < maxRetries) {
+      document.getElementById('lobby-status').textContent='Server waking up... ('+(retries+1)+'/'+maxRetries+')';
+      setTimeout(() => { mpWs = null; mpConnect(onOpen, retries + 1); }, retryDelay);
       return;
     }
     document.getElementById('lobby-status').textContent='Could not connect to server.';
@@ -11194,8 +11198,10 @@ function mpSend(obj) {
 
 // ── Incoming server/peer messages ─────────────────────────────────────────
 function onMpMessage(msg) {
+  console.log('[MP] Received:', msg.type, msg);
   if(msg.type==='ROOM_CREATED') {
     mpRoomCode=msg.code;
+    console.log('[MP] Room created with code:', msg.code);
     document.getElementById('lobby-room-code').textContent=msg.code;
     localSide='player'; isHost=true;
   }
