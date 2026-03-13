@@ -1,0 +1,25 @@
+{
+  "name": "iron-command",
+  "version": "1.0.0",
+  "description": "IRON COMMAND — RTS game with co-op multiplayer",
+  "main": "main.js",
+  "scripts": {
+    "start:server": "node server.js",
+    "start:game": "electron .",
+    "build:server": "pkg server.js --targets node22-win-x64 --output dist/IronCommand-Server.exe --compress GZip",
+    "build:game": "electron-packager . IronCommand --platform=win32 --arch=x64 --electron-version=33.4.11 --out=dist/game-raw --overwrite --asar --ignore=\"^/node_modules/(?!ws)|^/dist$|^/\\.git|^/server\\.js$|\\.bat$|^/assets/kenney_|^/assets/.*\\.zip$\" --win32metadata.ProductName=\"Iron Command\" --win32metadata.FileDescription=\"Iron Command RTS\"",
+    "build": "npm run build:server && npm run build:game"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@electron/packager": "^19.0.5",
+    "@yao-pkg/pkg": "^5.13.0",
+    "electron": "^33.4.11"
+  },
+  "pkg": {
+    "targets": ["node22-win-x64"],
+    "outputPath": "dist"
+  }
+}
