@@ -10644,6 +10644,8 @@ function initGame() {
 
   initAI();
   updateFog();
+  updateFogCanvas();
+  fogDirty = false;
   uiDirty=true;
   // Host camera starts at player1 base, guest at player2 base
   if(localSide==='player2') {
