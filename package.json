@@ -4,6 +4,7 @@
   "description": "IRON COMMAND — RTS game with co-op multiplayer",
   "main": "main.js",
   "scripts": {
+    "start": "node server.js",
     "start:server": "node server.js",
     "start:game": "electron .",
     "build:server": "pkg server.js --targets node22-win-x64 --output dist/IronCommand-Server.exe --compress GZip",
